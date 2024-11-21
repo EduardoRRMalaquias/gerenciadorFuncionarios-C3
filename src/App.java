@@ -3,12 +3,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Calendar;
 
 public class App {
     public static void main(String[] args) {
         Cargo ObjCargo =  new Cargo(4, "limpeza", 1300.00);
         Funcionario funcionario = new Funcionario(4, "julia", "126.774.657-31", ObjCargo);
         String nomeArquivo = "src/dados/Funcionarios.csv";
+        System.out.println(hoje);
 
         //adicionar aluno ao arquivo
         try {
