@@ -1,167 +1,302 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class App {
+    private static String arquivoFuncionarios = "src/dados/Funcionarios.csv";
+    private static String arquivoCargos = "src/dados/Cargos.csv";
+    private static List<Funcionario> funcionarios = new ArrayList<>();
+    private static List<Cargo> cargos = new ArrayList<>();
+    private static int funcionarioId = 1;
+    private static int cargoId = 1;
+
     public static void main(String[] args) {
-        Cargo ObjCargo =  new Cargo(10, "Anddal", 2100.00);
-        Funcionario funcionario = new Funcionario(10, "Guilhm", "126.774.7-40", ObjCargo);
-        String nomeArquivo = "src/dados/Funcionarios.csv";
+        Scanner scanner = new Scanner(System.in);
 
-        //adicionar aluno ao arquivo
-        try {
-            boolean arquivoExiste = new File(nomeArquivo).exists();
-            FileWriter escritor = new FileWriter(nomeArquivo, arquivoExiste);
-            if (!arquivoExiste) {
-                escritor.write(funcionario.chaves());
+        carregarCargosDoArquivo();
+        carregarFuncionariosDoArquivo();
+
+        while (true) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Gerenciar Funcionários");
+            System.out.println("2. Gerenciar Cargos");
+            System.out.println("3. Consultar Histórico de Funcionários");
+            System.out.println("4. Sair");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    gerenciarFuncionarios(scanner);
+                    break;
+                case 2:
+                    gerenciarCargos(scanner);
+                    break;
+                case 3:
+                    consultarFuncionarios();
+                    break;
+                case 4:
+                    System.out.println("Encerrando...");
+                    salvarCargosNoArquivo();
+                    salvarFuncionariosNoArquivo();
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Opção inválida!");
             }
-
-            escritor.write(funcionario.toString(false));
-            escritor.flush();
-            escritor.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Deu ruin");
         }
+    }
 
+    private static void gerenciarFuncionarios(Scanner scanner) {
+        System.out.println("\nGerenciar Funcionários:");
+        System.out.println("1. Cadastrar");
+        System.out.println("2. Editar");
+        System.out.println("3. Consultar");
+        System.out.println("4. Apagar");
+        System.out.print("Escolha uma opção: ");
+        int opcao = scanner.nextInt();
 
-        //Editar arquivo
-        int idFuncionario = 10;
-        Funcionario novosDados = new Funcionario(11, "brunao", "126.774", ObjCargo);
-        List<Funcionario> funcionarios = new ArrayList<>();
-        boolean funcionarioEncontrado = false;
-        try (BufferedReader leitor = new BufferedReader(new FileReader(nomeArquivo))) {
-            boolean arquivoExiste = new File(nomeArquivo).exists();
-            FileWriter escritor = new FileWriter(nomeArquivo, arquivoExiste);
-            if (!arquivoExiste) {
-                System.out.println("Arquivo não encontrado.");
-            }
+        switch (opcao) {
+            case 1:
+                cadastrarFuncionario(scanner);
+                break;
+            case 2:
+                editarFuncionario(scanner);
+                break;
+            case 3:
+                consultarFuncionarios();
+                break;
+            case 4:
+                apagarFuncionario(scanner);
+                break;
+            default:
+                System.out.println("Opção inválida!");
+        }
+    }
 
-            
+    private static void gerenciarCargos(Scanner scanner) {
+        System.out.println("\nGerenciar Cargos:");
+        System.out.println("1. Cadastrar");
+        System.out.println("2. Editar");
+        System.out.println("3. Consultar");
+        System.out.println("4. Consultar Cargos com IDs");
+        System.out.println("5. Apagar");
+        System.out.print("Escolha uma opção: ");
+        int opcao = scanner.nextInt();
 
-            String linha = leitor.readLine(); // Ler cabeçalho
-            String cabecalho = linha;
-            while ((linha = leitor.readLine()) != null) {
+        switch (opcao) {
+            case 1:
+                cadastrarCargo(scanner);
+                break;
+            case 2:
+                editarCargo(scanner);
+                break;
+            case 3:
+                consultarCargos();
+                break;
+            case 4:
+                consultarCargosComIds();
+                break;
+            case 5:
+                apagarCargo(scanner);
+                break;
+            default:
+                System.out.println("Opção inválida!");
+        }
+    }
 
-                String[] partes = linha.split(";");
-                int id = Integer.parseInt(partes[0]);
-                String nome = partes[1];
-                String cpf = partes[2];
-                String cargo = partes[3];
+    // Métodos para Funcionários
+    private static void cadastrarFuncionario(Scanner scanner) {
+        scanner.nextLine(); // Limpa o buffer após o último nextInt()
+        System.out.print("Nome do funcionário: ");
+        String nome = scanner.nextLine(); // Captura o nome completo
+        System.out.print("CPF do funcionário: ");
+        String cpf = scanner.next();
+    
+        if (cpfExiste(cpf)) {
+            System.out.println("Erro: CPF já cadastrado!");
+            return;
+        }
+    
+        consultarCargosComIds();
+        System.out.print("ID do cargo: ");
+        int idCargo = scanner.nextInt();
+        Cargo cargo = buscarCargoPorId(idCargo);
+        if (cargo != null) {
+            funcionarios.add(new Funcionario(funcionarioId++, nome, cpf, cargo));
+            System.out.println("Funcionário cadastrado!");
+        } else {
+            System.out.println("Cargo não encontrado!");
+        }
+    }
+    
 
-                Funcionario f = new Funcionario(id, nome, cpf);
+    private static void editarFuncionario(Scanner scanner) {
+        System.out.print("ID do funcionário: ");
+        int id = scanner.nextInt();
+        Funcionario func = buscarFuncionarioPorId(id);
+        if (func != null) {
+            System.out.print("Novo nome: ");
+            func.setNome(scanner.next());
+            System.out.print("Novo CPF: ");
+            String novoCpf = scanner.next();
 
-
-                if (f.getId() == idFuncionario) {
-                    f = novosDados; // Substituir pelos novos dados
-                    funcionarioEncontrado = true;
-                }
-                funcionarios.add(f);
-            }
-
-            if (!funcionarioEncontrado) {
-                System.out.println("Funcionário com ID " + idFuncionario + " não encontrado.");
+            if (!func.getCpf().equals(novoCpf) && cpfExiste(novoCpf)) {
+                System.out.println("Erro: CPF já cadastrado!");
                 return;
             }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Erro ao ler o arquivo.");
-        }
 
-        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(nomeArquivo))) {
-            escritor.write(funcionarios.get(0).chaves()); // Escreve o cabeçalho
+            func.setCpf(novoCpf);
+            consultarCargosComIds();
+            System.out.print("Novo ID do cargo: ");
+            int novoCargoId = scanner.nextInt();
+            Cargo novoCargo = buscarCargoPorId(novoCargoId);
+            if (novoCargo != null) {
+                func.setCargo(novoCargo);
+                System.out.println("Funcionário atualizado!");
+            } else {
+                System.out.println("Cargo não encontrado!");
+            }
+        } else {
+            System.out.println("Funcionário não encontrado!");
+        }
+    }
+
+    private static void consultarFuncionarios() {
+        if (funcionarios.isEmpty()) {
+            System.out.println("Nenhum funcionário cadastrado.");
+            return;
+        }
+        System.out.println("\nLista de Funcionários:");
+        funcionarios.forEach(f -> System.out.println(f.getId() + " - " + f.getNome() + " - " + f.getCpf() + " - " + f.getCargo().getNome()));
+    }
+
+    private static void apagarFuncionario(Scanner scanner) {
+        System.out.print("ID do funcionário: ");
+        int idApagar = scanner.nextInt();
+        funcionarios.removeIf(f -> f.getId() == idApagar);
+        System.out.println("Funcionário removido!");
+    }
+
+    // Métodos para Cargos
+    private static void cadastrarCargo(Scanner scanner) {
+        System.out.print("Nome do cargo: ");
+        String nome = scanner.next();
+        System.out.print("Salário do cargo: ");
+        double salario = scanner.nextDouble();
+        cargos.add(new Cargo(cargoId++, nome, salario));
+        System.out.println("Cargo cadastrado!");
+    }
+
+    private static void editarCargo(Scanner scanner) {
+        System.out.print("ID do cargo: ");
+        int id = scanner.nextInt();
+        Cargo cargo = buscarCargoPorId(id);
+        if (cargo != null) {
+            System.out.print("Novo nome: ");
+            cargo.setNome(scanner.next());
+            System.out.print("Novo salário: ");
+            cargo.setSalario(scanner.nextDouble());
+            System.out.println("Cargo atualizado!");
+        } else {
+            System.out.println("Cargo não encontrado!");
+        }
+    }
+
+    private static void consultarCargos() {
+        if (cargos.isEmpty()) {
+            System.out.println("Nenhum cargo cadastrado.");
+            return;
+        }
+        System.out.println("\nLista de Cargos:");
+        cargos.forEach(c -> System.out.println(c.getNome()));
+    }
+
+    private static void consultarCargosComIds() {
+        if (cargos.isEmpty()) {
+            System.out.println("Nenhum cargo cadastrado.");
+            return;
+        }
+        System.out.println("\nLista de Cargos (ID - Nome - Salário):");
+        cargos.forEach(c -> System.out.println(c.getId() + " - " + c.getNome() + " - R$ " + c.getSalario()));
+    }
+
+    private static void apagarCargo(Scanner scanner) {
+        System.out.print("ID do cargo: ");
+        int idApagar = scanner.nextInt();
+        cargos.removeIf(c -> c.getId() == idApagar);
+        System.out.println("Cargo removido!");
+    }
+
+    // Métodos auxiliares
+    private static Funcionario buscarFuncionarioPorId(int id) {
+        return funcionarios.stream().filter(f -> f.getId() == id).findFirst().orElse(null);
+    }
+
+    private static Cargo buscarCargoPorId(int id) {
+        return cargos.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
+    }
+
+    private static boolean cpfExiste(String cpf) {
+        return funcionarios.stream().anyMatch(f -> f.getCpf().equals(cpf));
+    }
+
+    private static void carregarFuncionariosDoArquivo() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivoFuncionarios))) {
+            String linha = reader.readLine(); // Pula o cabeçalho
+            while ((linha = reader.readLine()) != null) {
+                String[] dados = linha.split(";");
+                int id = Integer.parseInt(dados[0]);
+                String nome = dados[1];
+                String cpf = dados[2];
+                int idCargo = Integer.parseInt(dados[3].trim());
+                Cargo cargo = buscarCargoPorId(idCargo);
+                if (cargo != null) {
+                    funcionarios.add(new Funcionario(id, nome, cpf, cargo));
+                    funcionarioId = Math.max(funcionarioId, id + 1);
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Erro ao carregar funcionários: " + e.getMessage());
+        }
+    }
+
+    private static void carregarCargosDoArquivo() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivoCargos))) {
+            String linha = reader.readLine(); // Pula o cabeçalho
+            while ((linha = reader.readLine()) != null) {
+                String[] dados = linha.split(";");
+                int id = Integer.parseInt(dados[0]);
+                String nome = dados[1];
+                double salario = Double.parseDouble(dados[2].trim());
+                cargos.add(new Cargo(id, nome, salario));
+                cargoId = Math.max(cargoId, id + 1);
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Erro ao carregar cargos: " + e.getMessage());
+        }
+    }
+
+    private static void salvarFuncionariosNoArquivo() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoFuncionarios))) {
+            writer.write("Id;Nome;Cpf;Cargo\n");
             for (Funcionario f : funcionarios) {
-                escritor.write(f.toString(false));
+                writer.write(f.getId() + ";" + f.getNome() + ";" + f.getCpf() + ";" + f.getCargo().getId() + "\n");
             }
-            System.out.println("Funcionário atualizado com sucesso!");
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Erro ao salvar o arquivo.");
+            System.out.println("Erro ao salvar funcionários: " + e.getMessage());
         }
- 
+    }
 
-        //consultar todos os funcionarios
-        try {
-            BufferedReader leitor = new BufferedReader(new FileReader(nomeArquivo));
-            String linha;
-            boolean primeiraLinha = true;
-
-            while ((linha = leitor.readLine()) != null ) { 
-                if (primeiraLinha) {
-                    primeiraLinha = false;
-                    continue;
-                }
-
-                String[] celula = linha.split(";");
-
-                int id = Integer.parseInt(celula[0]) ;
-                String nome = celula[1];
-                String cpf = celula[2];
-                String cargo = celula[3];            
-            
-                System.out.println
-                ("Id: "+ id +
-                " - Nome: "+ nome +
-                " - Cpf: "+ cpf +
-                " - Cargo: "+ cargo);
+    private static void salvarCargosNoArquivo() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoCargos))) {
+            writer.write("Id;Nome;Salario\n");
+            for (Cargo c : cargos) {
+                writer.write(c.getId() + ";" + c.getNome() + ";" + c.getSalario() + "\n");
             }
-            leitor.close();
-
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Deu ruin");
+            System.out.println("Erro ao salvar cargos: " + e.getMessage());
         }
-
-
-        // consultar funcionario por id
-        int index = 9;
-        try {
-            BufferedReader leitor = new BufferedReader(new FileReader(nomeArquivo));
-            String linha;
-            boolean primeiraLinha = true;
-
-            while ((linha = leitor.readLine()) != null ) { 
-                if (primeiraLinha) {
-                    primeiraLinha = false;
-                    continue;
-                }
-
-                String[] celula = linha.split(";");
-
-                int id = Integer.parseInt(celula[0]) ;
-                
-
-                if(index == id){
-                    String nome = celula[1];
-                    String cpf = celula[2];
-                    String cargo = celula[3];
-                
-                    System.out.println
-                    ("Id: "+ id +
-                    " - Nome: "+ nome +
-                    " - Cpf: "+ cpf +
-                    " - Cargo: "+ cargo);
-                }
-
-                
-            }
-            leitor.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Deu ruin");
-        }
-
-
-        // falta aqui apagar ja esta em produção pelo chatGPT
-        
     }
 }
- 
