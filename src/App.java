@@ -32,7 +32,7 @@ public class App {
 
 
         //Editar arquivo
-        int idFuncionario = 4;
+        int idFuncionario = 10;
         Funcionario novosDados = new Funcionario(11, "brunao", "126.774", ObjCargo);
         List<Funcionario> funcionarios = new ArrayList<>();
         boolean funcionarioEncontrado = false;
