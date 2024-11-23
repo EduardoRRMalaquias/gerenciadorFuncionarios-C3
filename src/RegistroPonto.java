@@ -56,10 +56,10 @@ public class RegistroPonto {
       this.categoria = categoria;
   }
 
-  // @Override
-  // public String toString() {
-  //   return "ID: " + id + ", Nome: " + nome + ", CPF: " + cpf + ", Cargo: " + (cargo != null ? cargo.getNome() : "Nenhum");
-  // }
+   @Override
+   public String toString() {
+     return "ID: " + id + ", Nome: " + nome + ", CPF: " + cpf + ", Cargo: " + (cargo != null ? cargo.getNome() : "Nenhum");
+   }
 
 
 }

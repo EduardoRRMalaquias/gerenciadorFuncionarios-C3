@@ -1,8 +1,15 @@
+
 public class Funcionario{
   private int id;
   private String nome;
   private String cpf;
   private Cargo cargo;
+
+  public Funcionario(int id, String nome, String cpf) {
+    this.id = id;
+    this.nome = nome;
+    this.cpf = cpf;
+}
 
   public Funcionario(int id, String nome, String cpf, Cargo cargo) {
     this.id = id;
@@ -43,8 +50,15 @@ public void setCargo(Cargo cargo) {
     this.cargo = cargo;
 } 
 
-@Override
-public String toString() {
-    return "ID: " + id + ", Nome: " + nome + ", CPF: " + cpf + ", Cargo: " + (cargo != null ? cargo.getNome() : "Nenhum");
+public String chaves(){
+    return "Id;Nome;Cpf;Cargo\n";
+}
+
+
+public String toString(boolean exibicao) {
+    if(exibicao){
+        return "Id: " + id + " - Nome " + nome + " - CPF: " + cpf + "- Cargo: " + (cargo != null ? cargo.getNome() + "\n" : "sem cargo \n");
+    }
+    return id + ";" + nome + ";" + cpf + ";" + (cargo != null ? cargo.getNome() + "\n" : "sem cargo \n");
 }
 } 
