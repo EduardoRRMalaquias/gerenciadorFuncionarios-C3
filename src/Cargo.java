@@ -4,12 +4,6 @@ public class Cargo {
   private String descricao;
   private double salario;
 
-  public Cargo(int id, String nome, double salario) {
-      this.id = id;
-      this.nome = nome;
-      this.salario = salario;
-  }
-
   public Cargo(int id, String nome, String descricao, double salario) {
       this.id = id;
       this.nome = nome;
