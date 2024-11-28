@@ -3,5 +3,7 @@
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
-    ]
+    ],
+    "java.debug.settings.vmArgs": "--enable-preview",
+    "java.compile.settings.compilerArgs": ["--enable-preview"]
 }
