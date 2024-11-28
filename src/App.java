@@ -24,13 +24,15 @@ public class App {
         carregarRegistroPontoDoArquivo();
 
         while (true) {
-            System.out.println("\n==== Menu ====");
-            System.out.println("1. Gerenciar Funcionrios");
+            System.out.println("\n=#==========#=");
+            System.out.println("=#== Menu ==#=");
+            System.out.println("=#==========#=\n");
+            System.out.println("1. Gerenciar Funcionarios");
             System.out.println("2. Gerenciar Cargos");
             System.out.println("3. Gerenciar Registros de Ponto");
             System.out.println("4. Sair");
             System.out.print("Escolha uma opcao: ");
-            int opcao = scanner.nextInt();
+            int opcao = scanner.nextInt(); 
 
             switch (opcao) {
                 case 1:
@@ -56,7 +58,9 @@ public class App {
     }
 
     private static void gerenciarFuncionarios() {
-        System.out.println("\nGerenciar Funcionarios:");
+        System.out.println("\n=#===============================#=");
+        System.out.println("=#=== Gerenciar Funcionarios: ===#=");
+        System.out.println("=#===============================#=\n");
         System.out.println("1. Cadastrar");
         System.out.println("2. Editar");
         System.out.println("3. Consultar");
@@ -83,7 +87,9 @@ public class App {
     }
 
     private static void gerenciarCargos() {
-        System.out.println("\nGerenciar Cargos:");
+        System.out.println("\n=#=========================#=");
+        System.out.println("=#=== Gerenciar Cargos: ===#=");
+        System.out.println("=#=========================#=\n");
         System.out.println("1. Cadastrar");
         System.out.println("2. Editar");
         System.out.println("3. Consultar");
@@ -114,7 +120,9 @@ public class App {
     }
 
     private static void gerenciarRegistrosPontos() {
-      System.out.println("\n=== Gerenciar Registros de Pontos ===");
+      System.out.println("\n=#=====================================#=");
+      System.out.println("=#=== Gerenciar Registros de Pontos ===#=");
+      System.out.println("=#=====================================#=\n");
       System.out.println("1. Registrar Ponto");
       System.out.println("2. Editar Registro de Ponto");
       System.out.println("3. Consultar Registros de Pontos");
@@ -168,7 +176,9 @@ public class App {
     
 
     private static void editarFuncionario() {
-        System.out.print("ID do funcionario: ");
+        consultarFuncionarios();
+        System.out.print("Deseja editar qual funcionario?");
+        System.out.print("\nID do funcionario: ");
         int id = scanner.nextInt();
         Funcionario func = buscarFuncionarioPorId(id);
         if (func != null) {
@@ -208,7 +218,9 @@ public class App {
     }
 
     private static void apagarFuncionario() {
-        System.out.print("ID do funcionario: ");
+        consultarFuncionarios();
+        System.out.print("Deseja apagar qual funcionario?");
+        System.out.print("\nID do funcionario: ");
         int idApagar = scanner.nextInt();
         funcionarios.removeIf(f -> f.getId() == idApagar);
         System.out.println("Funcionario removido!");
@@ -228,7 +240,9 @@ public class App {
     }
 
     private static void editarCargo() {
-        System.out.print("ID do cargo: ");
+        consultarCargosComIds();
+        System.out.print("Deseja editar qual Cargo?");
+        System.out.print("\nID do cargo: ");
         int id = scanner.nextInt();
         scanner.nextLine(); // Consumir a quebra de linha restante
     
@@ -276,7 +290,9 @@ public class App {
     }
 
     private static void apagarCargo() {
-        System.out.print("ID do cargo: ");
+        consultarCargosComIds();
+        System.out.print("Deseja apagar qual Cargo?");
+        System.out.print("\nID do cargo: ");
         int idApagar = scanner.nextInt();
         cargos.removeIf(c -> c.getId() == idApagar);
         System.out.println("Cargo removido!");
@@ -292,11 +308,11 @@ public class App {
       System.out.println("Ponto sera registrado em: " + agora.format(formatoData) + "as " + agora.format(formatoHora));
       consultarFuncionarios();
       System.out.print("ID do funcionario: ");
-      int idFuncionario = scanner.nextInt(); // Captura o nome completo
+      int idFuncionario = scanner.nextInt();
       Funcionario funcionario = buscarFuncionarioPorId(idFuncionario);
   
       System.out.println("Categorias: ");
-      System.out.println("[S] - Saida \n [E] - Entrada");
+      System.out.println("[S] - Saida \n[E] - Entrada");
       char categoria = scanner.next().toLowerCase().charAt(0);
       if (funcionario != null) {
           registrosPontos.add(new RegistroPonto(registroPontosId++, funcionario, categoria));
@@ -307,7 +323,9 @@ public class App {
     }
 
     private static void editarRegistroPonto() {
-      System.out.print("ID do resgistro: ");
+      consultarRegistrosPontos();
+      System.out.print("Deseja editar qual registro? ");
+      System.out.print("\nID do resgistro: ");
       int id = scanner.nextInt();
       RegistroPonto ponto = buscarRegistroPontoPorId(id);
       if (ponto != null) {
@@ -341,7 +359,9 @@ public class App {
 }
 
   private static void apagarRegistroPonto() {
-    System.out.print("ID do registro: ");
+    consultarRegistrosPontos();
+    System.out.print("Deseja apagar qual registro? ");
+    System.out.print("\nID do registro: ");
     int idApagar = scanner.nextInt();
     registrosPontos.removeIf(r -> r.getId() == idApagar);
     System.out.println("Registro de ponto removido!");
