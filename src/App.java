@@ -19,14 +19,13 @@ public class App {
 
     public static void main(String[] args) {
         
-
         carregarCargosDoArquivo();
         carregarFuncionariosDoArquivo();
         carregarRegistroPontoDoArquivo();
 
         while (true) {
-            System.out.println("\nMenu:");
-            System.out.println("1. Gerenciar Funcionarios");
+            System.out.println("\n==== Menu ====");
+            System.out.println("1. Gerenciar Funcionrios");
             System.out.println("2. Gerenciar Cargos");
             System.out.println("3. Gerenciar Registros de Ponto");
             System.out.println("4. Sair");
@@ -51,18 +50,18 @@ public class App {
                     scanner.close();
                     return;
                 default:
-                    System.out.println("Opção inválida!");
+                    System.out.println("Opcao invalida!");
             }
         }
     }
 
     private static void gerenciarFuncionarios() {
-        System.out.println("\nGerenciar Funcionários:");
+        System.out.println("\nGerenciar Funcionarios:");
         System.out.println("1. Cadastrar");
         System.out.println("2. Editar");
         System.out.println("3. Consultar");
         System.out.println("4. Apagar");
-        System.out.print("Escolha uma opcão: ");
+        System.out.print("Escolha uma opcao: ");
         int opcao = scanner.nextInt();
 
         switch (opcao) {
@@ -90,7 +89,7 @@ public class App {
         System.out.println("3. Consultar");
         System.out.println("4. Consultar Cargos com IDs");
         System.out.println("5. Apagar");
-        System.out.print("Escolha uma opção: ");
+        System.out.print("Escolha uma opcao: ");
         int opcao = scanner.nextInt();
 
         switch (opcao) {
@@ -163,13 +162,13 @@ public class App {
             funcionarios.add(new Funcionario(funcionarioId++, nome, cpf, cargo));
             System.out.println("Funcionario cadastrado!");
         } else {
-            System.out.println("Cargo não encontrado!");
+            System.out.println("Cargo nao encontrado!");
         }
     }
     
 
     private static void editarFuncionario() {
-        System.out.print("ID do funcionário: ");
+        System.out.print("ID do funcionario: ");
         int id = scanner.nextInt();
         Funcionario func = buscarFuncionarioPorId(id);
         if (func != null) {
@@ -179,7 +178,7 @@ public class App {
             String novoCpf = scanner.next();
 
             if (!func.getCpf().equals(novoCpf) && cpfExiste(novoCpf)) {
-                System.out.println("Erro: CPF já cadastrado!");
+                System.out.println("Erro: CPF ja cadastrado!");
                 return;
             }
 
@@ -190,29 +189,29 @@ public class App {
             Cargo novoCargo = buscarCargoPorId(novoCargoId);
             if (novoCargo != null) {
                 func.setCargo(novoCargo);
-                System.out.println("Funcionário atualizado!");
+                System.out.println("Funcionario atualizado!");
             } else {
-                System.out.println("Cargo não encontrado!");
+                System.out.println("Cargo nao encontrado!");
             }
         } else {
-            System.out.println("Funcionário não encontrado!");
+            System.out.println("Funcionario nao encontrado!");
         }
     }
 
     private static void consultarFuncionarios() {
         if (funcionarios.isEmpty()) {
-            System.out.println("Nenhum funcionário cadastrado.");
+            System.out.println("Nenhum funcionario cadastrado.");
             return;
         }
-        System.out.println("\nLista de Funcionários:");
+        System.out.println("\nLista de Funcionarios:");
         funcionarios.forEach(f -> System.out.println(f.getId() + " - " + f.getNome() + " - " + f.getCpf() + " - " + f.getCargo().getNome()));
     }
 
     private static void apagarFuncionario() {
-        System.out.print("ID do funcionário: ");
+        System.out.print("ID do funcionario: ");
         int idApagar = scanner.nextInt();
         funcionarios.removeIf(f -> f.getId() == idApagar);
-        System.out.println("Funcionário removido!");
+        System.out.println("Funcionario removido!");
     }
 
     // Métodos para Cargos
@@ -220,9 +219,9 @@ public class App {
         scanner.nextLine();
         System.out.print("Nome do cargo: ");
         String nome = scanner.nextLine();
-        System.out.print("Descrição do cargo: ");
+        System.out.print("Descricao do cargo: ");
         String descricao = scanner.nextLine();
-        System.out.print("Salário do cargo: ");
+        System.out.print("Salario do cargo: ");
         double salario = scanner.nextDouble();
         cargos.add(new Cargo(cargoId++, nome, descricao, salario));
         System.out.println("Cargo cadastrado!");
@@ -241,22 +240,22 @@ public class App {
             System.out.print("Nova descricao: ");
             cargo.setDescricao(scanner.nextLine()); // Permitir entrada com espaços
     
-            System.out.print("Novo salário: ");
+            System.out.print("Novo salario: ");
             if (scanner.hasNextDouble()) {
                 cargo.setSalario(scanner.nextDouble());
                 scanner.nextLine(); // Consumir a quebra de linha restante
             } else {
-                System.out.println("Entrada inválida para salário.");
+                System.out.println("Entrada invalida para salario.");
                 scanner.nextLine(); // Consumir entrada inválida
                 return;
             }
     
             System.out.println("Cargo atualizado!");
         } else {
-            System.out.println("Cargo não encontrado!");
+            System.out.println("Cargo nao encontrado!");
         }
-    }
-    
+    }    
+
 
     private static void consultarCargos() {
         if (cargos.isEmpty()) {
@@ -272,7 +271,7 @@ public class App {
             System.out.println("Nenhum cargo cadastrado.");
             return;
         }
-        System.out.println("\nLista de Cargos (ID - Nome - Salário):");
+        System.out.println("\nLista de Cargos (ID - Nome - Salario):");
         cargos.forEach(c -> System.out.println(c.getId() + " - " + c.getNome() + " - R$ " + c.getSalario()));
     }
 
@@ -292,7 +291,7 @@ public class App {
       DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm:ss");
       System.out.println("Ponto sera registrado em: " + agora.format(formatoData) + "as " + agora.format(formatoHora));
       consultarFuncionarios();
-      System.out.print("ID do funcionário: ");
+      System.out.print("ID do funcionario: ");
       int idFuncionario = scanner.nextInt(); // Captura o nome completo
       Funcionario funcionario = buscarFuncionarioPorId(idFuncionario);
   
@@ -303,7 +302,7 @@ public class App {
           registrosPontos.add(new RegistroPonto(registroPontosId++, funcionario, categoria));
           System.out.println("Resgistro cadastrado!");
       } else {
-          System.out.println("Funcionario não encontrado!");
+          System.out.println("Funcionario nao encontrado!");
       }
     }
 
@@ -313,7 +312,7 @@ public class App {
       RegistroPonto ponto = buscarRegistroPontoPorId(id);
       if (ponto != null) {
         consultarFuncionarios();
-        System.out.print("ID do novo funcionário: ");
+        System.out.print("ID do novo funcionario: ");
         int idFuncionario = scanner.nextInt(); // Captura o nome completo
         Funcionario funcionario = buscarFuncionarioPorId(idFuncionario);
         ponto.setFuncionario(funcionario);
@@ -325,10 +324,10 @@ public class App {
             ponto.setCategoria(categoria);
             System.out.println("Registro atualizado!");
           } else {
-            System.out.println("Cargo não encontrado!");
+            System.out.println("Cargo nao encontrado!");
           }
       } else {
-          System.out.println("Registro não encontrado!");
+          System.out.println("Registro nao encontrado!");
       }
   }
 
@@ -388,7 +387,7 @@ public class App {
                 }
             }
         } catch (IOException | NumberFormatException e) {
-            System.out.println("Erro ao carregar funcionários: " + e.getMessage());
+            System.out.println("Erro ao carregar funcionarios: " + e.getMessage());
         }
     }
 
@@ -435,7 +434,7 @@ public class App {
                 writer.write(f.getId() + ";" + f.getNome() + ";" + f.getCpf() + ";" + f.getCargo().getId() + "\n");
             }
         } catch (IOException e) {
-            System.out.println("Erro ao salvar funcionários: " + e.getMessage());
+            System.out.println("Erro ao salvar funcionrios: " + e.getMessage());
         }
     }
 
