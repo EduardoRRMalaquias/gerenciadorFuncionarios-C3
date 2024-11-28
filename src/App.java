@@ -18,9 +18,11 @@ public class App {
     public static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        
         carregarCargosDoArquivo();
         carregarFuncionariosDoArquivo();
         carregarRegistroPontoDoArquivo();
+
         while (true) {
             System.out.println("\n=#==========#=");
             System.out.println("=#== Menu ==#=");
@@ -180,11 +182,10 @@ public class App {
         int id = scanner.nextInt();
         Funcionario func = buscarFuncionarioPorId(id);
         if (func != null) {
-            scanner.nextLine();
             System.out.print("Novo nome: ");
-            func.setNome(scanner.nextLine());
+            func.setNome(scanner.next());
             System.out.print("Novo CPF: ");
-            String novoCpf = scanner.nextLine();
+            String novoCpf = scanner.next();
 
             if (!func.getCpf().equals(novoCpf) && cpfExiste(novoCpf)) {
                 System.out.println("Erro: CPF ja cadastrado!");
